@@ -134,7 +134,7 @@
     [self layoutExpansion:offset];
 }
 
--(void) endExpansioAnimated:(BOOL) animated
+-(void) endExpansionAnimated:(BOOL) animated
 {
     if (expandedButton) {
         [UIView animateWithDuration: animated ? 0.2 : 0.0 animations:^{
@@ -653,7 +653,7 @@ typedef struct MGSwipeAnimationData {
             activeExpansion = view;
         }
         else {
-            [view endExpansioAnimated:YES];
+            [view endExpansionAnimated:YES];
             activeExpansion = nil;
             CGFloat t = MIN(1.0f, offset/view.bounds.size.width);
             [view transition:settings[i].transition percent:t];
@@ -756,7 +756,7 @@ typedef struct MGSwipeAnimationData {
         if (expansion) {
             UIView * expandedButton = [expansion getExpandedButton];
             [self setSwipeOffset:targetOffset animated:YES completion:^{
-                [expansion endExpansioAnimated:NO];
+                [expansion endExpansionAnimated:NO];
                 [expansion handleClick:expandedButton fromExpansion:YES];
             }];
         }
@@ -795,7 +795,7 @@ typedef struct MGSwipeAnimationData {
         }
         
         if (_swipeOffset != 0.0) {
-            return YES; //already swipped, don't need to check buttons or canSwipe delegate
+            return YES; //already swiped, don't need to check buttons or canSwipe delegate
         }
         
         //make a decision according to existing buttons or using the optional delegate
