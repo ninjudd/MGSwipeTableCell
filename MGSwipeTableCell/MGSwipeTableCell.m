@@ -647,6 +647,16 @@ typedef struct MGSwipeAnimationData {
 
         if (view != activeButtons) continue; //only transition if active (perf. improvement)
         bool expand = expansions[i].buttonIndex >= 0 && offset > view.bounds.size.width * expansions[i].threshold;
+
+        if (_delegate && [_delegate respondsToSelector:@selector(swipeTableCell:expansionActivated:direction:)]) {
+            bool wasExpanded = (activeExpansion != nil);
+            if (expand != wasExpanded) {
+                [self.delegate swipeTableCell:self
+                           expansionActivated:expand
+                                    direction:(sign > 0 ? MGSwipeDirectionLeftToRight : MGSwipeDirectionRightToLeft)];
+            }
+        }
+
         if (expand) {
             [view expandToOffset:offset button:expansions[i].buttonIndex];
             targetOffset = expansions[i].fillOnTrigger ? self.contentView.bounds.size.width * sign : 0;

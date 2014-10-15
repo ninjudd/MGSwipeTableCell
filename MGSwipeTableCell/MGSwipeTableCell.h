@@ -83,6 +83,14 @@ typedef NS_ENUM(NSInteger, MGSwipeDirection) {
  **/
 -(NSArray*) swipeTableCell:(MGSwipeTableCell*) cell swipeButtonsForDirection:(MGSwipeDirection)direction
              swipeSettings:(MGSwipeSettings*) swipeSettings expansionSettings:(MGSwipeExpansionSettings*) expansionSettings;
+/**
+ * Called when the expansion becomes active or inactive
+ * This can be used to change the background color of a button on expansion, for example
+ * @param swipeTableCell the UITableVieCel to configure. You can get the indexPath using [tableView indexPathForCell:cell]
+ * @param activated Did the expansion just become activated or not
+ * @param direction The swipe direction (left to right or right to left)
+ **/
+-(void) swipeTableCell:(MGSwipeTableCell*) cell expansionActivated:(BOOL) activated direction:(MGSwipeDirection)direction;
 
 @end
 
