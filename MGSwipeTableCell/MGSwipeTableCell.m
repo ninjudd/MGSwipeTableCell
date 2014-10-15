@@ -46,7 +46,6 @@
     BOOL fromLeft;
     UIView * expandedButton;
     CGFloat expansionOffset;
-    BOOL autoHideExpansion;
 }
 
 #pragma mark Layout
@@ -157,7 +156,7 @@
 
 #pragma mark Trigger Actions
 
--(void) handleClick: (id) sender fromExpansion:(BOOL) fromExpansion
+-(BOOL) handleClick: (id) sender fromExpansion:(BOOL) fromExpansion
 {
     bool autoHide = false;
 #pragma clang diagnostic push
@@ -175,15 +174,16 @@
         }
         autoHide|= [_cell.delegate swipeTableCell:_cell tappedButtonAtIndex:index direction:fromLeft ? MGSwipeDirectionLeftToRight : MGSwipeDirectionRightToLeft fromExpansion:fromExpansion];
     }
-    
-    if (fromExpansion) {
-        expandedButton = nil;
-        _cell.swipeOffset = 0;
-    }
-    else if (autoHide) {
-        [_cell hideSwipeAnimated:YES];
-    }
 
+    if (autoHide) {
+        if (fromExpansion) {
+            expandedButton = nil;
+            _cell.swipeOffset = 0;
+        } else {
+            [_cell hideSwipeAnimated:YES];
+        }
+    }
+    return autoHide;
 }
 //button listener
 -(void) buttonClicked: (id) sender
@@ -422,7 +422,7 @@ typedef struct MGSwipeAnimationData {
         [swipeOverlay addSubview:swipeView];
         [self.contentView addSubview:swipeOverlay];
     }
-    
+
     [self fetchButtonsIfNeeded];
     if (!leftView && _leftButtons.count > 0) {
         leftView = [[MGSwipeButtonsView alloc] initWithButtons:_leftButtons direction:MGSwipeDirectionLeftToRight];
@@ -471,7 +471,6 @@ typedef struct MGSwipeAnimationData {
     if (!tableInputOverlay) {
         return;
     }
-
     swipeOverlay.hidden = YES;
     swipeView.image = nil;
     
@@ -766,8 +765,9 @@ typedef struct MGSwipeAnimationData {
         if (expansion) {
             UIView * expandedButton = [expansion getExpandedButton];
             [self setSwipeOffset:targetOffset animated:YES completion:^{
-                [expansion endExpansionAnimated:NO];
-                [expansion handleClick:expandedButton fromExpansion:YES];
+                if ([expansion handleClick:expandedButton fromExpansion:YES]) {
+                    [expansion endExpansionAnimated:NO];
+                }
             }];
         }
         else {
